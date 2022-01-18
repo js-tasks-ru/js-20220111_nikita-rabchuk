@@ -12,13 +12,11 @@ export function sortStrings(arr, param = "asc") {
   };
   const localesOptions = ["ru-RU", "en-EN"];
 
-  if (param === "asc") {
-    return newArr.sort((a, b) =>
-      a.localeCompare(b, localesOptions, compareOptions)
-    );
-  } else if (param === "desc") {
-    return newArr.sort((a, b) =>
-      b.localeCompare(a, localesOptions, compareOptions)
-    );
-  }
+  return newArr.sort((a, b) => {
+    if (param === 'asc') {
+      return a.localeCompare(b, localesOptions, compareOptions);
+    } else if (param === 'desc') {
+      return b.localeCompare(a, localesOptions, compareOptions);
+    }
+  })
 }
