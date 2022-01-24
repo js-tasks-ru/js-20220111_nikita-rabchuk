@@ -3,7 +3,6 @@
  * @param {string} path - the strings path separated by dot
  * @returns {function} - function-getter which allow get value from object by set path
  */
-// function createGetter(path) {
 export function createGetter(path) {
   const closurePath = path.split(".");
 
@@ -32,13 +31,3 @@ export function createGetter(path) {
     return getNextValue(obj);
   };
 }
-
-const product = {
-  category: {
-    title: "asd",
-  },
-};
-
-const getter = createGetter("category");
-
-console.log(getter(product));
