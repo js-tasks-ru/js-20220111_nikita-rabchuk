@@ -3,42 +3,42 @@
  * @param {string} path - the strings path separated by dot
  * @returns {function} - function-getter which allow get value from object by set path
  */
+// function createGetter(path) {
 export function createGetter(path) {
   const closurePath = path.split(".");
 
   return function createGetter(obj) {
     let recCounter = 0;
 
-    const getNextValue = (prevValue, counter) => {
-      const currentProp = closurePath[counter];
-      const nextProp = closurePath[counter++];
+    const getNextValue = (obj) => {
+      const currentValue = obj[closurePath[recCounter]];
+      const nextKey = closurePath[recCounter + 1];
 
-      if (prevValue[nextProp]) {
-        return getNextValue(prevValue[nextProp], counter++);
-      } else {
-        if (prevValue[currentProp]) {
-          return prevValue[currentProp];
-        }
-        return prevValue;
+      if (
+        !currentValue ||
+        (currentValue[nextKey] === undefined && nextKey !== undefined)
+      ) {
+        return;
       }
 
-      // if (prevValue[currentProp]) {
-      //   return prevValue[currentProp];
-      // }
+      if (currentValue[nextKey]) {
+        recCounter++;
+        return getNextValue(currentValue);
+      }
 
-      // return prevValue;
+      return currentValue;
     };
 
-    return getNextValue(obj, recCounter);
+    return getNextValue(obj);
   };
 }
 
-// const product = {
-//   category: {
-//     title: 'asd',
-//   },
-// };
+const product = {
+  category: {
+    title: "asd",
+  },
+};
 
-// const getter = createGetter("category.title.name");
+const getter = createGetter("category");
 
-// console.log(getter(product));
+console.log(getter(product));
