@@ -5,29 +5,26 @@
  */
 export function createGetter(path) {
   const closurePath = path.split(".");
+  let recCounter = 0;
 
-  return function createGetter(obj) {
-    let recCounter = 0;
+  const getNextValue = (obj) => {
+    const currentValue = obj[closurePath[recCounter]];
+    const nextKey = closurePath[recCounter + 1];
 
-    const getNextValue = (obj) => {
-      const currentValue = obj[closurePath[recCounter]];
-      const nextKey = closurePath[recCounter + 1];
+    if (
+      !currentValue ||
+      (currentValue[nextKey] === undefined && nextKey !== undefined)
+    ) {
+      return;
+    }
 
-      if (
-        !currentValue ||
-        (currentValue[nextKey] === undefined && nextKey !== undefined)
-      ) {
-        return;
-      }
+    if (currentValue[nextKey]) {
+      recCounter++;
+      return getNextValue(currentValue);
+    }
 
-      if (currentValue[nextKey]) {
-        recCounter++;
-        return getNextValue(currentValue);
-      }
-
-      return currentValue;
-    };
-
-    return getNextValue(obj);
+    return currentValue;
   };
+
+  return getNextValue;
 }
