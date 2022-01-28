@@ -3,28 +3,42 @@
  * @param {string} path - the strings path separated by dot
  * @returns {function} - function-getter which allow get value from object by set path
  */
+// function createGetter(path) {
 export function createGetter(path) {
   const closurePath = path.split(".");
-  let recCounter = 0;
 
-  const getNextValue = (obj) => {
-    const currentValue = obj[closurePath[recCounter]];
-    const nextKey = closurePath[recCounter + 1];
+  return (obj) => {
+    let recCounter = 0;
 
-    if (
-      !currentValue ||
-      (currentValue[nextKey] === undefined && nextKey !== undefined)
-    ) {
-      return;
-    }
+    const getNextValue = (obj) => {
+      const currentValue = obj[closurePath[recCounter]];
+      const nextKey = closurePath[recCounter + 1];
 
-    if (currentValue[nextKey]) {
-      recCounter++;
-      return getNextValue(currentValue);
-    }
+      if (
+        !currentValue ||
+        (currentValue[nextKey] === undefined && nextKey !== undefined)
+      ) {
+        return;
+      }
 
-    return currentValue;
+      if (currentValue[nextKey]) {
+        recCounter++;
+        return getNextValue(currentValue);
+      }
+
+      return currentValue;
+    };
+
+    return getNextValue(obj);
   };
-
-  return getNextValue;
 }
+
+const product = {
+  category: {
+    title: "asd",
+  },
+};
+
+const getter = createGetter("category");
+
+console.log(getter(product));
