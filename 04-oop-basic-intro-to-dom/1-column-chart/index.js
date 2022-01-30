@@ -15,8 +15,15 @@ export default class ColumnChart {
     this.value = formatHeading(value);
     this.link = link;
 
-    this.render();
+    this.init();
   }
+
+  init() {
+    this.render();
+    this.initEventListeners();
+  }
+
+  initEventListeners() {}
 
   getTemplate() {
     return `
