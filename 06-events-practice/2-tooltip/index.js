@@ -1,11 +1,10 @@
 export default class Tooltip {
   static instance;
 
+  static screenHeight = document.documentElement.clientWidth;
+  static screenWidth = document.documentElement.clientHeight;
+
   element;
-  width;
-  height;
-  screenWidth = document.documentElement.clientWidth;
-  screenHeight = document.documentElement.clientHeight;
 
   onPointerOver = (event) => {
     const element = event.target.closest("[data-tooltip]");
@@ -29,7 +28,6 @@ export default class Tooltip {
     if (Tooltip.instance) {
       return Tooltip.instance;
     }
-
     Tooltip.instance = this;
   }
 
@@ -40,6 +38,7 @@ export default class Tooltip {
   initEventListeners() {
     document.addEventListener("pointerover", this.onPointerOver);
     document.addEventListener("pointerout", this.onPointerOut);
+    window.addEventListener("resize", this.onResize);
   }
 
   render(html) {
@@ -56,27 +55,31 @@ export default class Tooltip {
     const top = event.clientY + shift;
 
     this.handleTooltipPos(left, top);
-
   }
 
   handleTooltipPos(left, top) {
     const tooltipWidth = this.element.offsetWidth;
     const tooltipHeight = this.element.offsetHeight;
 
-    if (tooltipWidth + left > this.screenWidth) {
-      this.element.classList.add('right-border');
+    if (tooltipWidth + left > Tooltip.screenWidth) {
+      this.element.classList.add("right-border");
     } else {
-      this.element.classList.remove('right-border');
+      this.element.classList.remove("right-border");
     }
 
-    if (tooltipHeight + top > this.screenHeight) {
-      this.element.classList.add('top-border');
+    if (tooltipHeight + top > Tooltip.screenHeight) {
+      this.element.classList.add("top-border");
     } else {
-      this.element.classList.remove('top-border');
+      this.element.classList.remove("top-border");
     }
 
     this.element.style.left = `${left}px`;
     this.element.style.top = `${top}px`;
+  }
+
+  onResize(event) {
+    Tooltip.screenWidth = document.documentElement.clientWidth;
+    Tooltip.screenHeight = document.documentElement.clientHeight;
   }
 
   remove() {
@@ -89,6 +92,7 @@ export default class Tooltip {
     document.removeEventListener("pointerover", this.onPointerOver);
     document.removeEventListener("pointerout", this.onPointerOut);
     document.removeEventListener("pointermove", this.onPointerMove);
+    window.removeEventListener("resize", this.onResize);
     this.remove();
     this.element = null;
   }
